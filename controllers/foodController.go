@@ -122,7 +122,7 @@ func toFixed(num float64, precision int) float64 {
 
 func UpdateFood() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var ctx, cancle = context.WithTimeout(context.Background(), 100*time.Second)
+		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 		var menu models.Menu
 		var food models.Food
 		foodId := c.Param("food_id")
@@ -143,8 +143,8 @@ func UpdateFood() gin.HandlerFunc {
 			updateObj = append(updateObj, bson.E{"food_image", food.Food_image})
 		}
 		if food.Menu_id != nil {
-			err := menuCollection.FindOne(ctx, bson.M{"menu_id": food.Menu_id})
-			defer cancle()
+			err := menuCollection.FindOne(ctx, bson.M{"menu_id": food.Menu_id}).Decode(&menu)
+			defer cancel()
 			if err != nil {
 				msg := fmt.Sprintf("message:Menu was not found")
 				c.JSON(http.StatusInternalServerError, gin.H{"error": msg})

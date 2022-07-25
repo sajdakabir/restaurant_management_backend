@@ -1,10 +1,14 @@
 package routes
 
-import "github.com/gin-gonic/gin"
+import (
+	controller "github/sajdakabir/restaurant_management_backend/controllers"
+
+	"github.com/gin-gonic/gin"
+)
 
 func MenuRoutes(incomingRoutes *gin.Engine) {
-	incomingRoutes.GET("/menus", controller.GetMenues())
-	incomingRoutes.GET("/menus/:menu_id", controller.GetMenue())
-	incomingRoutes.POST("/menus", controller.CreateMenue())
+	incomingRoutes.GET("/menus", controller.GetMenus())
+	incomingRoutes.GET("/menus/:menu_id", controller.GetMenu())
+	incomingRoutes.POST("/menus", controller.CreateMenu())
 	incomingRoutes.PATCH("/menus/:menu_id", controller.UpdateMenu())
 }

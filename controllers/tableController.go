@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"github/sajdakabir/restaurant_management_backend/database"
+	"github/sajdakabir/restaurant_management_backend/models"
 	"log"
 	"net/http"
 	"time"
@@ -20,7 +21,7 @@ func GetTables() gin.HandlerFunc {
 		result, err := tableCollection.Find(context.TODO(), bson.M{})
 		defer cancel()
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured when listing tables"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured when listing table items"})
 			return
 		}
 		var allTables []bson.M
@@ -29,5 +30,19 @@ func GetTables() gin.HandlerFunc {
 		}
 		c.JSON(http.StatusOK, allTables)
 
+	}
+}
+
+func GetTable() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		tableId := c.Param("table_id")
+		var table models.Table
+		err := tableCollection.FindOne(ctx, bson.M{"table_id": tableId}).Decode(&table)
+		defer cancel()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured while fetching the tables"})
+		}
+		c.JSON(http.StatusOK, table)
 	}
 }

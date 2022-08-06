@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"github/sajdakabir/restaurant_management_backend/database"
+	"github/sajdakabir/restaurant_management_backend/models"
 	"log"
 	"net/http"
 	"strconv"
@@ -53,5 +54,21 @@ func GetUsers() gin.HandlerFunc {
 		}
 		c.JSON(http.StatusOK, allUsers[0])
 
+	}
+}
+
+func GetUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		userId := c.Param("user_id")
+		var user models.User
+
+		err := userCollection.FindOne(ctx, bson.M{"user_id": userId}).Decode(&user)
+
+		defer cancel()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured while listing user items"})
+		}
+		c.JSON(http.StatusOK, user)
 	}
 }
